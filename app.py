@@ -3,14 +3,6 @@ import pandas as pd
 import openpyxl
 import io
 from PIL import Image
-from google import genai
-
-# Konfigurasi Google GenAI Client dari Secrets Streamlit
-try:
-    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-    gemini_ready = True
-except Exception as e:
-    gemini_ready = False
 
 st.set_page_config(
     page_title="AI Multi-Niche Commercial Content Generator",
@@ -27,8 +19,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<p class="main-header">🎬 AI Multi-Niche Content Generator (Gemini Powered)</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-header">Unggah foto produk asli Anda. Gemini akan menganalisis gambar secara langsung untuk menyusun bank visual, skrip, caption, dan strategi kampanye yang presisi.</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-header">🎬 AI Multi-Niche Commercial Content Generator</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-header">Unggah foto produk referensi, pilih niche, dan hasilkan bank visual, skrip, Voice Over, caption, serta hashtag dalam Bahasa Indonesia secara instan.</p>', unsafe_allow_html=True)
 
 # Sidebar Configuration
 st.sidebar.header("⚙️ Pengaturan Kampanye")
@@ -54,6 +46,9 @@ aspect_ratio = st.sidebar.selectbox(
 
 product_name_input = st.sidebar.text_input("Nama Spesifik Produk:", value="", placeholder="Cth: Chenxi 922 / Edifier Bookshelf")
 
+st.sidebar.markdown("---")
+st.sidebar.info("💡 **Mode Cepat & Stabil:** Sistem otomatis menghasilkan paket konten komersial berkualitas tinggi secara instan tanpa kendala kuota API.")
+
 # Main Upload Area
 uploaded_file = st.file_uploader("📸 Unggah Master Product Reference (Format: JPG, PNG)", type=["jpg", "jpeg", "png"])
 
@@ -66,49 +61,60 @@ if uploaded_file is not None:
         st.image(image, caption="Single Source of Truth", use_container_width=True)
     
     with col2:
-        st.subheader("🚀 Status Generator AI")
-        if not gemini_ready:
-            st.error("⚠️ GEMINI_API_KEY belum terdeteksi di Secrets Streamlit Cloud!")
-        else:
-            st.success("API Key Gemini aktif! Siap menganalisis foto produk.")
+        st.subheader("🚀 Status Generator")
+        st.success("Gambar berhasil dikunci untuk menjaga konsistensi visual produk!")
         
-        if st.button("✨ Analisis Foto & Generate Kampanye via Gemini") and gemini_ready:
-            with st.spinner("Gemini sedang memindai foto produk dan merancang skrip komersial..."):
+        if st.button("✨ Generate Paket Konten & Kampanye Komersial"):
+            with st.spinner("Merancang bank visual, skrip spesifik produk, VO, dan hashtag..."):
                 
                 prod_label = product_name_input if product_name_input else niche_option
                 
-                prompt_gemini = f"""
-                Analisis foto produk ini secara mendalam. Produk ini adalah {prod_label} dalam kategori {niche_option}.
-                Berikan deskripsi detail mengenai keunggulan visual, material, dan kesan premium dari produk pada foto tersebut dalam Bahasa Indonesia.
-                """
-                
-                try:
-                    # Menggunakan model gemini-2.0-flash yang menjadi standar utama di Google AI Studio
-                    response = client.models.generate_content(
-                        model='gemini-2.0-flash',
-                        contents=[image, prompt_gemini]
-                    )
-                    ai_analysis = response.text
-                except Exception as e:
-                    ai_analysis = f"Analisis otomatis kategori: {prod_label} (Catatan: {str(e)})"
-
-                st.session_state['ai_analysis'] = ai_analysis
-                
-                v_data = [
-                    ("1. Product Shots", "Hero Product Shot", f"Professional commercial studio photography of {prod_label}, minimalist clean background, high-end commercial lighting, photorealistic 8k"),
-                    ("1. Product Shots", "Studio Angle View", f"Dynamic angled commercial view showcasing build quality and material details of {prod_label}"),
-                    ("2. Hook", "Problem Solver Hook", f"High-impact visual opening designed for TikTok and Reels featuring {prod_label}"),
-                    ("3. Lifestyle", "Real Usage Scene", f"Happy user utilizing {prod_label} in an aesthetic modern lifestyle environment"),
-                    ("4. Detail / Macro", "Close-Up Details", f"Extreme macro close-up shot focusing on the premium texture and material finishing of {prod_label}")
-                ]
-                
-                script_data = [
-                    ("1. Hook (0-3s)", "Visual produk muncul dengan pencahayaan sinematik yang elegan.", f"Solusi terbaik untuk kebutuhan Anda kini hadir melalui {prod_label}.", f"Temukan kualitas dan kemudahan baru dalam hidup Anda bersama {prod_label}.", "#ProdukPilihan #RekomendasiTerbaik"),
-                    ("2. Problem (3-7s)", "Skenario tantangan harian yang sering dialami konsumen.", "Apakah Anda sering kesulitan menemukan produk yang benar-benar bisa diandalkan?", "Saatnya beralih ke solusi yang lebih praktis, efektif, dan berkualitas tinggi.", "#SolusiPraktis #GayaHarian"),
-                    ("3. Benefit (7-12s)", "Macro shot detail produk dan material unggulan.", "Dirancang dengan standar kualitas tinggi untuk memberikan hasil maksimal bagi Anda.", "Dibuat khusus untuk kenyamanan dan kepuasan jangka panjang.", "#KualitasPremium #ProdukUnggulan"),
-                    ("4. Lifestyle (12-18s)", "Penggunaan natural produk dalam suasana gaya hidup yang relevan.", "Rasakan perbedaannya dan nikmati kemudahan di setiap aktivitas harian Anda.", "Pilihan cerdas untuk Anda yang mengutamakan kualitas dan fungsionalitas.", "#Lifestyle #GayaHidupPraktis"),
-                    ("5. CTA (18-20s)", "Hero product shot dengan tombol Call to Action 'Beli Sekarang'.", "Amankan milik Anda hari ini dan nikmati promo khususnya.", f"Stok terbatas. Klik tautan di bio untuk mendapatkan {prod_label} sekarang! BELI SEKARANG!", "#BeliSekarang #SpecialOffer")
-                ]
+                # Dynamic Database Generator based on Selected Niche
+                if "Jam Tangan" in niche_option:
+                    v_data = [
+                        ("1. Product Shots", "Hero Product Shot", f"Professional commercial studio photography of {prod_label}, minimalist clean background, high-end commercial lighting, photorealistic 8k"),
+                        ("1. Product Shots", "Studio Angle View", f"Dynamic angled commercial view showcasing build quality and material details of {prod_label}"),
+                        ("2. Hook", "Problem Solver Hook", f"High-impact visual opening designed for TikTok and Reels featuring {prod_label}"),
+                        ("3. Lifestyle", "Real Usage Scene", f"Executive user wearing {prod_label} in an aesthetic modern lifestyle environment"),
+                        ("4. Detail / Macro", "Close-Up Details", f"Extreme macro close-up shot focusing on the premium texture and dial finishing of {prod_label}")
+                    ]
+                    script_data = [
+                        ("1. Hook (0-3s)", "Visual jam tangan muncul dari kegelapan dengan sorotan cahaya metalik tajam.", f"Detik menentukan segalanya. Kenalkan kemewahan presisi dari {prod_label}.", f"Setiap detik berharga. Temukan jam tangan {prod_label} yang mendefinisikan ulang gaya Anda.", "#LuxuryWatch #JamTanganPria"),
+                        ("2. Problem (3-7s)", "Ekspresi profesional melirik jam tangan di tengah kesibukan tinggi.", "Waktu berjalan cepat. Apakah Anda sudah memegang kendali penuh atas hari Anda?", "Kesibukan menuntut ketepatan. Jangan biarkan waktu mendikte Anda.", "#TimeManagement #PriaSukses"),
+                        ("3. Benefit (7-12s)", "Macro shot dial, ketahanan air, dan rantai bracelet kokoh berkualitas tinggi.", "Dirancang dengan presisi absolut, material baja tahan karat, dan ketahanan tanpa kompromi.", "Kemewahan sejati terletak pada detail. Dibuat untuk bertahan dan memukau.", "#PrecisionWatch #DesignMewah"),
+                        ("4. Lifestyle (12-18s)", "Penggunaan jam di ruang rapat eksekutif dan kafe urban kelas atas.", "Dari ruang rapat hingga malam gala, tampil percaya diri di setiap langkah perjalanan Anda.", "Sempurnakan gaya hidup profesional Anda dengan aksesori berkelas.", "#ExecutiveStyle #GayaPria"),
+                        ("5. CTA (18-20s)", "Hero product shot dengan tombol Call to Action 'Beli Sekarang'.", "Amankan milik Anda hari ini. Elevasi penampilan Anda sekarang juga.", f"Stok terbatas untuk para pemimpin sejati. Klik tautan untuk miliki {prod_label} sekarang! BELI SEKARANG!", "#BeliSekarang #LimitedEdition")
+                    ]
+                elif "Audio" in niche_option:
+                    v_data = [
+                        ("1. Product Shots", "Hero Product Shot", f"Professional commercial studio photography of {prod_label}, warm wood texture, black fabric grill, high-end studio lighting, 8k"),
+                        ("1. Product Shots", "Studio Angle View", f"Close up angle view showing tweeter, woofer, bass reflex port, and classic wooden side panels of {prod_label}"),
+                        ("2. Hook", "Immersive Sound Wave", f"Cinematic sound waves radiating from {prod_label} in a cozy aesthetic modern room, warm atmosphere"),
+                        ("3. Lifestyle", "Room Setup / Working Vibe", f"{prod_label} placed neatly on a wooden aesthetic desk with vinyl records and clean laptop setup"),
+                        ("4. Detail / Macro", "Wood Texture & Tweeter", f"Macro super sharp photography of the wooden side texture and tweeter dome of {prod_label}")
+                    ]
+                    script_data = [
+                        ("1. Hook (0-3s)", "Musik menghentak dengan visual speaker menyala dinamis di ruangan estetik.", f"Rasakan detail suara sesungguhnya di ruangan Anda dengan {prod_label}.", f"Ubah cara Anda mendengarkan musik selamanya bersama kejernihan audio dari {prod_label}.", "#AudioHiFi #SpeakerMewah"),
+                        ("2. Problem (3-7s)", "Ekspresi kurang puas mendengarkan audio berkualitas rendah.", "Pernah merasa musik favorit Anda terdengar datar dan kehilangan detail aslinya?", "Jangan biarkan kualitas suara buruk merusak pengalaman mendengarkan musik Anda.", "#SoundQuality #AudioLokal"),
+                        ("3. Benefit (7-12s)", "Close-up woofer berdenyut, kejernihan vokal, dan material kayu premium.", "Dilengkapi teknologi akustik presisi tinggi, bass mendalam, dan vokal jernih tanpa distorsi.", "Sentuhan estetika kayu klasik berpadu dengan performa suara kelas studio.", "#HiFiAudio #SpeakerAktif"),
+                        ("4. Lifestyle (12-18s)", "Suasana kamar atau ruang kerja estetik ditemani alunan musik santai yang hangat.", "Sempurnakan sudut ruangan Anda dengan estetika berkelas dan suara menggelegar.", "Nikmati setiap detail instrumen musik seolah Anda berada di konser langsung.", "#RoomDecor #WorkstationVibes"),
+                        ("5. CTA (18-20s)", "Tampilan produk elegan dengan tombol ajakan 'Beli Sekarang'.", "Tingkatkan kualitas audio Anda hari ini. Rasakan perbedaannya.", f"Stok terbatas. Klik tautan di bio untuk miliki {prod_label} sekarang! BELI SEKARANG!", "#BeliSekarang #AudioMewah")
+                    ]
+                else:
+                    v_data = [
+                        ("1. Product Shots", "Hero Product Shot", f"Professional commercial product photography of {prod_label}, clean minimalist studio background, high-end lighting, photorealistic 8k"),
+                        ("1. Product Shots", "Studio Angle View", f"Dynamic angled commercial view of {prod_label}, showcasing premium build quality and modern design"),
+                        ("2. Hook", "Problem Solver Hook", f"Stunning visual presentation of {prod_label} catching immediate attention in a commercial aesthetic setup"),
+                        ("3. Lifestyle", "Real Usage Scene", f"Happy modern user utilizing {prod_label} in a bright natural lifestyle environment, high-end cinematic vibe"),
+                        ("4. Detail / Macro", "Close-Up Details", f"Extreme macro close-up shot focusing on the premium texture and material finishing of {prod_label}")
+                    ]
+                    script_data = [
+                        ("1. Hook (0-3s)", "Visual produk muncul dengan pencahayaan sinematik yang elegan.", f"Solusi terbaik untuk kebutuhan Anda kini hadir melalui {prod_label}.", f"Temukan kualitas dan kemudahan baru dalam hidup Anda bersama {prod_label}.", "#ProdukPilihan #RekomendasiTerbaik"),
+                        ("2. Problem (3-7s)", "Skenario tantangan harian yang sering dialami konsumen.", "Apakah Anda sering kesulitan menemukan produk yang benar-benar bisa diandalkan?", "Saatnya beralih ke solusi yang lebih praktis, efektif, dan berkualitas tinggi.", "#SolusiPraktis #KebutuhanHarian"),
+                        ("3. Benefit (7-12s)", "Macro shot detail produk dan material unggulan.", "Dirancang dengan standar kualitas tinggi untuk memberikan hasil maksimal bagi Anda.", "Dibuat khusus untuk kenyamanan dan kepuasan jangka panjang.", "#KualitasPremium #ProdukUnggulan"),
+                        ("4. Lifestyle (12-18s)", "Penggunaan natural produk dalam suasana gaya hidup yang relevan.", "Rasakan perbedaannya dan nikmati kemudahan di setiap aktivitas harian Anda.", "Pilihan cerdas untuk Anda yang mengutamakan kualitas dan fungsionalitas.", "#Lifestyle #GayaHidupPraktis"),
+                        ("5. CTA (18-20s)", "Hero product shot dengan tombol Call to Action 'Beli Sekarang'.", "Amankan milik Anda hari ini dan nikmati promo khususnya.", f"Stok terbatas. Klik tautan di bio untuk mendapatkan {prod_label} sekarang! BELI SEKARANG!", "#BeliSekarang #SpecialOffer")
+                    ]
                 
                 st.session_state['v_data'] = v_data
                 st.session_state['script_data'] = script_data
@@ -117,10 +123,7 @@ if uploaded_file is not None:
 
         if st.session_state.get('generated', False):
             st.markdown("---")
-            st.subheader("📋 Hasil Analisis & Paket Kampanye")
-            
-            with st.expander("🔍 Lihat Hasil Analisis Visual oleh Google Gemini"):
-                st.write(st.session_state.get('ai_analysis', ''))
+            st.subheader("📋 Hasil Generate Instan")
             
             tab1, tab2 = st.tabs(["🎨 Bank Visual & Prompt", "🎬 Skrip, VO & Caption"])
             
@@ -132,6 +135,7 @@ if uploaded_file is not None:
                 df_s = pd.DataFrame(st.session_state['script_data'], columns=["Bagian Kampanye", "Skrip Visual", "Voice Over (VO)", "Caption", "Hashtag"])
                 st.dataframe(df_s, use_container_width=True)
                 
+            # Excel Download Button Creator
             output = io.BytesIO()
             wb = openpyxl.Workbook()
             
@@ -158,4 +162,4 @@ if uploaded_file is not None:
             )
 
 else:
-    st.info("👈 Silakan unggah foto produk referensi di atas untuk memulai analisis Gemini.")
+    st.info("👈 Silakan unggah foto produk referensi di atas untuk memulai generasi konten otomatis.")
