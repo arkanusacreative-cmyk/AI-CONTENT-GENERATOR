@@ -83,9 +83,9 @@ if uploaded_file is not None:
                 """
                 
                 try:
-                    # Menggunakan model standar gemini-1.5-flash yang stabil dan aktif
+                    # Menggunakan model gemini-2.0-flash yang menjadi standar utama di Google AI Studio
                     response = client.models.generate_content(
-                        model='gemini-1.5-flash',
+                        model='gemini-2.0-flash',
                         contents=[image, prompt_gemini]
                     )
                     ai_analysis = response.text
