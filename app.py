@@ -45,10 +45,11 @@ st.sidebar.header("⚙️ Pengaturan Kampanye")
 niche_option = st.sidebar.selectbox(
     "Pilih Niche Produk:",
     [
+        "Audio & Speaker (Edifier / Karaoke / Hifi)",
         "Jam Tangan (Watch)",
         "Smartphone",
         "Fashion (Pakaian / Blouse / Kemeja)",
-        "Home & Living (Perabot / Speaker)",
+        "Home & Living (Perabot Rumah)",
         "Skincare & Parfum",
         "Sports Equipment (Olah Raga)",
         "Footwear (Sepatu & Sandal)",
@@ -61,7 +62,7 @@ aspect_ratio = st.sidebar.selectbox(
     ["Format Vertikal 9:16 (TikTok/Reels/Shorts)", "Format Persegi 1:1 (Instagram Feed)", "Format Lanskap 16:9 (YouTube / Banner)"]
 )
 
-product_name_input = st.sidebar.text_input("Nama Spesifik Produk (Opsional):", value="", placeholder="Cth: ROBOT RB650 / Kopi PRABU / Vioni Set")
+product_name_input = st.sidebar.text_input("Nama Spesifik Produk (Opsional):", value="", placeholder="Cth: Edifier Bookshelf / ROBOT RB650")
 
 st.sidebar.markdown("---")
 st.sidebar.info("💡 **Dinamis & Spesifik:** Konten, skrip, VO, dan hashtag akan disesuaikan otomatis dengan kategori dan produk pilihan Anda.")
@@ -87,7 +88,25 @@ if uploaded_file is not None:
                 prod_label = product_name_input if product_name_input else niche_option
                 
                 # Dynamic Database Generator based on Selected Niche
-                if "Watch" in niche_option:
+                if "Audio" in niche_option:
+                    v_data = [
+                        ("1. Product Shots", "Hero Product Shot", f"Tampilan utama speaker kayu {prod_label} dengan grill kain hitam elegan, panel samping corak kayu hangat, pencahayaan studio hangat berkelas."),
+                        ("1. Product Shots", "Studio Angle View", "Sudut pandang 3/4 memperlihatkan tweeter atas, woofer bawah, lubang bass reflex, dan finishing kayu klasik yang premium."),
+                        ("2. Hook", "Immersive Sound Wave", "Visual gelombang suara sinematik yang memancar dari speaker saat musik mulai dimainkan."),
+                        ("3. Problem", "Bad Sound Quality", "Suara musik datar, cempreng, dan kurang bertenaga dari speaker biasa atau bawaan TV/laptop."),
+                        ("4. Benefit", "Hi-Fi Acoustic Clarity", "Makro driver speaker, kejernihan vokal, dan dentuman bass mendalam yang bertenaga namun tetap jernih."),
+                        ("5. Lifestyle", "Room Setup / Working Vibe", "Speaker diletakkan di meja kerja kayu estetik atau ruang santai bersama vinyl/setup PC modern."),
+                        ("6. Detail / Macro", "Wood Texture & Tweeter", "Makro super tajam pada tekstur panel kayu samping, tombol kontrol, dan kubah tweeter audio."),
+                        ("7. CTA", "Buy Now", "Komposisi bersih produk dengan teks ajakan tebal: MILIKI SEKARANG.")
+                    ]
+                    script_data = [
+                        ("1. Hook (0-3s)", "Musik menghentak dengan visual speaker menyala dinamis di ruangan estetik.", f"Rasakan detail suara sesungguhnya di ruangan Anda dengan {prod_label}.", f"Ubah cara Anda mendengarkan musik selamanya bersama kejernihan audio dari {prod_label}.", "#AudioHiFi #EdifierSpeaker"),
+                        ("2. Problem (3-7s)", "Ekspresi kurang puas mendengarkan audio berkualitas rendah dan cempreng.", "Pernah merasa musik favorit Anda terdengar datar dan kehilangan detail aslinya?", "Jangan biarkan kualitas suara buruk merusak pengalaman mendengarkan musik Anda.", "#SoundQuality #AudioLokal"),
+                        ("3. Benefit (7-12s)", "Close-up woofer berdenyut, kejernihan vokal, dan material kayu premium.", "Dilengkapi teknologi akustik presisi tinggi, bass mendalam, dan vokal jernih tanpa distorsi.", "Sentuhan estetika kayu klasik berpadu dengan performa suara kelas studio.", "#HiFiAudio #SpeakerAktif"),
+                        ("4. Lifestyle (12-18s)", "Suasana kamar atau ruang kerja estetik ditemani alunan musik santai yang hangat.", "Sempurnakan sudut ruangan Anda dengan estetika berkelas dan suara menggelegar.", "Nikmati setiap detail instrumen musik seolah Anda berada di konser langsung.", "#RoomDecor #WorkstationVibes"),
+                        ("5. CTA (18-20s)", "Tampilan produk elegan dengan tombol ajakan 'Beli Sekarang'.", "Tingkatkan kualitas audio Anda hari ini. Rasakan perbedaannya.", f"Stok terbatas. Klik tautan di bio untuk miliki {prod_label} sekarang! BELI SEKARANG!", "#BeliSekarang #AudioMewah")
+                    ]
+                elif "Watch" in niche_option:
                     v_data = [
                         ("1. Product Shots", "Hero Product Shot", f"Tampilan utama jam tangan {prod_label} dengan pencahayaan studio mewah, latar belakang charcoal, bayangan lembut, fokus tajam pada dial dan bezel."),
                         ("1. Product Shots", "Front 3/4 Angle", "Sudut pandang 3/4 depan memperlihatkan kedalaman case, tombol chronograph, dan tekstur strap logam/kulit."),
