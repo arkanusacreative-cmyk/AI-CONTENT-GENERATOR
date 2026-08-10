@@ -176,7 +176,7 @@ if uploaded_file is not None:
                 
             with tab2:
                 df_s = pd.DataFrame(st.session_state['script_data'], columns=["Bagian Kampanye", "Skrip Visual", "Voice Over (VO)", "Caption", "Hashtag"])
-                st.dataframe(df_s, use_container_width=True if 'use_keyword_width' in dir(pd) else True, use_container_width=True)
+                st.dataframe(df_s, use_container_width=True if 'use_container_width' in dir(pd) else True, use_container_width=True)
                 
             # Excel Download Button Creator
             output = io.BytesIO()
