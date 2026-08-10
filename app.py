@@ -75,7 +75,7 @@ if uploaded_file is not None:
     with col1:
         st.subheader("🖼️ Master Produk")
         image = Image.open(uploaded_file)
-        st.image(image, caption="Single Source of Truth", use_column_width=True)
+        st.image(image, caption="Single Source of Truth", use_container_width=True)
     
     with col2:
         st.subheader("🚀 Status Generator")
