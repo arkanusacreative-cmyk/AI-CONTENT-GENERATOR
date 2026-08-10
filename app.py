@@ -4,7 +4,6 @@ import openpyxl
 import io
 from PIL import Image
 from google import genai
-from google.genai import types
 
 # Konfigurasi Google GenAI Client dari Secrets Streamlit
 try:
@@ -69,7 +68,7 @@ if uploaded_file is not None:
     with col2:
         st.subheader("🚀 Status Generator AI")
         if not gemini_ready:
-            st.error("⚠️ GEMINI_API_KEY belum terdeteksi di Secrets Streamlit Cloud! Harap atur terlebih dahulu.")
+            st.error("⚠️ GEMINI_API_KEY belum terdeteksi di Secrets Streamlit Cloud!")
         else:
             st.success("API Key Gemini aktif! Siap menganalisis foto produk.")
         
@@ -78,24 +77,23 @@ if uploaded_file is not None:
                 
                 prod_label = product_name_input if product_name_input else niche_option
                 
-                # Memanggil Gemini 2.5 Flash untuk menganalisis gambar yang diunggah
                 prompt_gemini = f"""
                 Analisis foto produk ini secara mendalam. Produk ini adalah {prod_label} dalam kategori {niche_option}.
                 Berikan deskripsi detail mengenai keunggulan visual, material, dan kesan premium dari produk pada foto tersebut dalam Bahasa Indonesia.
                 """
                 
                 try:
+                    # Menggunakan model standar gemini-1.5-flash yang stabil dan aktif
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-1.5-flash',
                         contents=[image, prompt_gemini]
                     )
                     ai_analysis = response.text
                 except Exception as e:
-                    ai_analysis = f"Analisis otomatis kategori: {prod_label} ({str(e)})"
+                    ai_analysis = f"Analisis otomatis kategori: {prod_label} (Catatan: {str(e)})"
 
                 st.session_state['ai_analysis'] = ai_analysis
                 
-                # Database Konten Berdasarkan Analisis
                 v_data = [
                     ("1. Product Shots", "Hero Product Shot", f"Professional commercial studio photography of {prod_label}, minimalist clean background, high-end commercial lighting, photorealistic 8k"),
                     ("1. Product Shots", "Studio Angle View", f"Dynamic angled commercial view showcasing build quality and material details of {prod_label}"),
@@ -134,7 +132,6 @@ if uploaded_file is not None:
                 df_s = pd.DataFrame(st.session_state['script_data'], columns=["Bagian Kampanye", "Skrip Visual", "Voice Over (VO)", "Caption", "Hashtag"])
                 st.dataframe(df_s, use_container_width=True)
                 
-            # Excel Download
             output = io.BytesIO()
             wb = openpyxl.Workbook()
             
